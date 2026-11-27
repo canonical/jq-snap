@@ -1,0 +1,38 @@
+name: Build and test snap
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test (amd64)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build snap
+        id: build
+        uses: snapcore/action-build@v1
+
+      - name: Install snap
+        run: sudo snap install --dangerous "${{ steps.build.outputs.snap }}"
+
+      - name: Check that jq is callable
+        run: |
+          set -euxo pipefail
+          readelf -d /snap/jq/current/usr/bin/jq | grep -F 'Shared library: [libonig.so.5]'
+          test -f "/snap/jq/current/usr/lib/$(gcc -dumpmachine)/libonig.so.5"
+          /snap/bin/jq --version
+          test "$(/snap/bin/jq --version)" = "jq-1.8.2"
+          test "$(echo '{"a": {"b": 42}}' | /snap/bin/jq -c '.a.b')" = "42"
+          result=$(/snap/bin/jq -n '"a" | test("a")')
+          test "$result" = "true"
+          test "$(/snap/bin/jq -nr '"foo-bar" | sub("-"; "_")')" = "foo_bar"

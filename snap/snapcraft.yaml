@@ -1,0 +1,62 @@
+name: jq
+base: core24
+version: '1.8.2'
+summary: Command-line JSON processor
+description: |
+  jq is a lightweight and flexible command-line JSON processor.
+  jq is developed by the jq project: https://github.com/jqlang/jq
+
+  It is like sed for JSON data - you can use it to slice and filter and map
+  and transform structured data with the same ease that sed, awk, grep and
+  friends let you play with text.
+contact: mailto:snaps@canonical.com
+license: MIT
+website: https://jqlang.org
+source-code: https://github.com/jqlang/jq
+issues: https://github.com/canonical/jq-snap/issues
+grade: stable
+confinement: strict
+
+platforms:
+  amd64:
+  arm64:
+  armhf:
+  ppc64el:
+  riscv64:
+  s390x:
+
+apps:
+  jq:
+    command: usr/bin/jq
+    plugs:
+      - home
+      - removable-media
+
+parts:
+  jq:
+    plugin: autotools
+    source: https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-1.8.2.tar.gz
+    source-checksum: sha256/71b8d6e8f5fe81f6c6d0d110e3892251f6ce76ed095abd315e26e6e1193af3af
+    override-build: |
+      patch -p1 < "$CRAFT_PROJECT_DIR/snap/patches/0002-Do-not-use-venderized-oniguruma.patch"
+      # The release tarball contains a pre-generated Makefile.in.
+      automake
+      craftctl default
+    autotools-configure-parameters:
+      - --prefix=/usr
+      - --disable-shared
+      - --enable-static
+      - --disable-docs
+      - --disable-maintainer-mode
+      - --with-oniguruma
+    build-packages:
+      - build-essential
+      - libonig-dev
+    stage-packages:
+      - libonig5
+    prime:
+      - usr/bin/jq
+      - usr/lib/*/libonig.so.*
+      - usr/share/man/man1/jq.1
+      - usr/share/doc/jq/COPYING
+      - usr/share/doc/libonig5/copyright
