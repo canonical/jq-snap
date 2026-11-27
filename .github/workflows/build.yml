@@ -1,0 +1,40 @@
+name: Build and test snap
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test (amd64)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build snap
+        id: build
+        uses: snapcore/action-build@v1
+
+      - name: Install snap
+        run: sudo snap install --dangerous "${{ steps.build.outputs.snap }}"
+
+      - name: Check that jq is callable
+        run: |
+          set -euxo pipefail
+          /snap/bin/jq --version
+          test "$(/snap/bin/jq --version)" = "jq-1.8.2"
+          test "$(echo '{"a": {"b": 42}}' | /snap/bin/jq -c '.a.b')" = "42"
+          test "$(/snap/bin/jq -nr '"foo-bar" | sub("-"; "_")')" = "foo_bar"
+
+      - name: Upload snap
+        uses: actions/upload-artifact@v4
+        with:
+          name: jq-snap-amd64
+          path: ${{ steps.build.outputs.snap }}
