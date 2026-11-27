@@ -28,6 +28,8 @@ jobs:
       - name: Check that jq is callable
         run: |
           set -euxo pipefail
+          readelf -d /snap/jq/current/usr/bin/jq | grep -F 'Shared library: [libonig.so.5]'
+          test -f "/snap/jq/current/usr/lib/$(gcc -dumpmachine)/libonig.so.5"
           /snap/bin/jq --version
           test "$(/snap/bin/jq --version)" = "jq-1.8.2"
           test "$(echo '{"a": {"b": 42}}' | /snap/bin/jq -c '.a.b')" = "42"

@@ -18,6 +18,10 @@ confinement: strict
 platforms:
   amd64:
   arm64:
+  armhf:
+  ppc64el:
+  riscv64:
+  s390x:
 
 apps:
   jq:
@@ -37,10 +41,15 @@ parts:
       - --enable-static
       - --disable-docs
       - --disable-maintainer-mode
-      - --with-oniguruma=builtin
+      - --with-oniguruma
     build-packages:
       - build-essential
+      - libonig-dev
+    stage-packages:
+      - libonig5
     prime:
       - usr/bin/jq
+      - usr/lib/*/libonig.so.*
       - usr/share/man/man1/jq.1
       - usr/share/doc/jq/COPYING
+      - usr/share/doc/libonig5/copyright
