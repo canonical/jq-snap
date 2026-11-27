@@ -4,14 +4,16 @@ version: '1.8.2'
 summary: Command-line JSON processor
 description: |
   jq is a lightweight and flexible command-line JSON processor.
+  jq is developed by the jq project: https://github.com/jqlang/jq
 
   It is like sed for JSON data - you can use it to slice and filter and map
   and transform structured data with the same ease that sed, awk, grep and
   friends let you play with text.
+contact: mailto:snaps@canonical.com
 license: MIT
 website: https://jqlang.org
 source-code: https://github.com/jqlang/jq
-issues: https://github.com/jqlang/jq/issues
+issues: https://github.com/canonical/jq-snap/issues
 grade: stable
 confinement: strict
 
