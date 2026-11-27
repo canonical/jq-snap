@@ -33,4 +33,6 @@ jobs:
           /snap/bin/jq --version
           test "$(/snap/bin/jq --version)" = "jq-1.8.2"
           test "$(echo '{"a": {"b": 42}}' | /snap/bin/jq -c '.a.b')" = "42"
+          result=$(/snap/bin/jq -n '"a" | test("a")')
+          test "$result" = "true"
           test "$(/snap/bin/jq -nr '"foo-bar" | sub("-"; "_")')" = "foo_bar"
