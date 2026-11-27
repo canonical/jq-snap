@@ -37,6 +37,11 @@ parts:
     plugin: autotools
     source: https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-1.8.2.tar.gz
     source-checksum: sha256/71b8d6e8f5fe81f6c6d0d110e3892251f6ce76ed095abd315e26e6e1193af3af
+    override-build: |
+      patch -p1 < "$CRAFT_PROJECT_DIR/snap/patches/0002-Do-not-use-venderized-oniguruma.patch"
+      # The release tarball contains a pre-generated Makefile.in.
+      automake
+      craftctl default
     autotools-configure-parameters:
       - --prefix=/usr
       - --disable-shared
