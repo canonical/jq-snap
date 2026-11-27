@@ -34,9 +34,3 @@ jobs:
           test "$(/snap/bin/jq --version)" = "jq-1.8.2"
           test "$(echo '{"a": {"b": 42}}' | /snap/bin/jq -c '.a.b')" = "42"
           test "$(/snap/bin/jq -nr '"foo-bar" | sub("-"; "_")')" = "foo_bar"
-
-      - name: Upload snap
-        uses: actions/upload-artifact@v4
-        with:
-          name: jq-snap-amd64
-          path: ${{ steps.build.outputs.snap }}

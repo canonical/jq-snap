@@ -15,5 +15,9 @@ jq --version
 ```
 
 A GitHub Actions workflow (`.github/workflows/build.yml`) builds the snap for
-amd64 on every push and pull request, installs it and checks that `jq` is
-callable.
+amd64 on pushes to `main` and on pull requests, installs it and checks that
+`jq` is callable. It does not publish or upload the snap.
+
+Configure the repository's GitHub integration in the Snapcraft dashboard to
+build the listed architectures on Launchpad. This integration is separate from
+the GitHub Actions smoke test and must be configured outside this repository.
